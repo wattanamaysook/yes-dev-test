@@ -1,0 +1,44 @@
+/* Luma Skin — base styles, tokens, app shell */
+:root{
+  --pearl:#f6f5f8; --surface:#fff; --ink:#231d2a; --muted:#6f677a; --line:#e4e0ea;
+  --plum:#5b3f6e; --plum-d:#47305a; --lilac:#ece6f2;
+  --mint:#2f7a6d; --mint-soft:#e2f1ee; --amber:#9a6412; --amber-soft:#fbf0dc;
+  --danger:#b3382c; --danger-soft:#fbe8e5;
+  --r-card:14px; --r-ctl:10px; --shadow:0 1px 2px rgba(35,29,42,.05),0 8px 24px rgba(91,63,110,.07);
+  --sidebar-w:244px;
+  --font:"Noto Sans Thai","Sarabun",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-head:"Noto Serif Thai","Sarabun",Georgia,serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:var(--font);background:var(--pearl);color:var(--ink);line-height:1.65}
+h1,h2,h3{font-family:var(--font-head);margin:0 0 .5rem;line-height:1.35;font-weight:600}
+h1{font-size:1.6rem} h2{font-size:1.25rem} h3{font-size:1.05rem}
+p{margin:0 0 1rem} a{color:var(--plum)} img{max-width:100%}
+:focus-visible{outline:2px solid var(--plum);outline-offset:2px}
+.hidden{display:none!important} .muted{color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* App shell: sidebar + topbar + content (built by layout.js) */
+.app-shell{min-height:100vh;padding-left:var(--sidebar-w)}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:1.4rem 1rem;z-index:30;transition:transform .2s}
+.brand{font-family:var(--font-head);font-size:1.35rem;font-weight:700;color:var(--plum);padding:0 .6rem 1.4rem}
+.brand small{display:block;font:400 .78rem var(--font);color:var(--muted)}
+.nav a{display:block;padding:.6rem .85rem;border-radius:var(--r-ctl);color:var(--ink);text-decoration:none;margin-bottom:.2rem}
+.nav a:hover{background:var(--pearl)}
+.nav a[aria-current=page]{background:var(--lilac);color:var(--plum-d);font-weight:600}
+.topbar{display:flex;align-items:center;gap:1rem;padding:.85rem 1.5rem;background:var(--surface);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.topbar h1{margin:0;font-size:1.15rem;flex:1}
+.user-chip{display:flex;align-items:center;gap:.75rem;font-size:.9rem}
+.user-chip .role{color:var(--muted);font-size:.8rem}
+.menu-btn{display:none}
+.content{padding:1.5rem;max-width:1200px}
+.scrim{position:fixed;inset:0;background:rgba(35,29,42,.4);z-index:25}
+@media(max-width:900px){
+  .app-shell{padding-left:0}
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:none}
+  .menu-btn{display:inline-flex}
+  .content{padding:1rem} .topbar{padding:.75rem 1rem}
+  .user-chip .who{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

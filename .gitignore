@@ -1,0 +1,16 @@
+# Database credentials
+backend/config/database.php
+
+# Environment files
+.env
+.env.*
+
+# Dependencies
+vendor/
+
+# Uploaded files
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# System files
+.DS_Store

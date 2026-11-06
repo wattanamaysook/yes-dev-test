@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Style Guide | Luma Skin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600&family=Noto+Serif+Thai:wght@600;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body>
+<div class="app-shell" id="shell"><main class="content">
+  <div class="alert alert-warn">หน้านี้ใช้ตรวจ Design System (Stage 1) ข้อมูลทั้งหมดเป็น MOCK</div>
+  <div class="stat-grid">
+    <div class="card stat"><div class="label">สินค้าทั้งหมด</div><div class="value">128</div></div>
+    <div class="card stat"><div class="label">เปิดใช้งาน</div><div class="value">117</div></div>
+    <div class="card stat"><div class="label">ปิดใช้งาน</div><div class="value">11</div></div>
+  </div>
+  <div class="page-head"><h2>สินค้า</h2>
+    <div><button class="btn btn-primary" id="b-primary">เพิ่มสินค้า</button> <button class="btn">ปุ่มรอง</button> <button class="btn btn-ghost">Ghost</button> <button class="btn btn-danger" id="b-del">ลบสินค้า</button> <button class="btn btn-primary is-loading" disabled>กำลังบันทึก</button></div></div>
+  <div class="card" style="margin-bottom:1.25rem;max-width:520px">
+    <div class="field"><label for="sku">SKU</label><input id="sku" placeholder=" ls-1030 "><div class="hint">ระบบจะแปลงเป็นตัวพิมพ์ใหญ่และตัดช่องว่างหัวท้ายให้</div></div>
+    <div class="field has-error"><label for="nm">ชื่อสินค้า</label><input id="nm"><div class="error-text">กรุณากรอกชื่อสินค้า</div></div>
+    <div class="field"><label for="skuo">SKU ที่บันทึกแล้ว (แก้ไขไม่ได้)</label><input id="skuo" value="LS-1001" readonly></div>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>SKU</th><th>ชื่อสินค้า</th><th>ราคา</th><th>สถานะ</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>LS-1001</td><td>Dew Serum</td><td id="p1"></td><td><span class="badge badge-active">เปิดใช้งาน</span></td><td class="actions"><button class="btn btn-sm">แก้ไข</button><button class="btn btn-sm btn-ghost">QR</button></td></tr>
+      <tr><td>LS-1002</td><td>Calm Cream</td><td id="p2"></td><td><span class="badge badge-inactive">ปิดใช้งาน</span></td><td class="actions"><button class="btn btn-sm">แก้ไข</button><button class="btn btn-sm btn-ghost">QR</button></td></tr>
+    </tbody></table></div>
+  <div class="pagination"><span class="muted">แสดง 1-10 จาก 128 รายการ</span><div class="pages"><button class="btn btn-sm btn-ghost">ก่อนหน้า</button><button class="btn btn-sm btn-primary">1</button><button class="btn btn-sm btn-ghost">2</button><button class="btn btn-sm btn-ghost">ถัดไป</button></div></div>
+</main></div>
+<script src="assets/js/config.js"></script><script src="assets/js/utils.js"></script>
+<script src="assets/js/mock.js"></script><script src="assets/js/api.js"></script><script src="assets/js/layout.js"></script>
+<script>
+  const U = window.Utils;
+  document.getElementById('p1').textContent = U.formatPrice(1290);
+  document.getElementById('p2').textContent = U.formatPrice(890.5);
+  document.getElementById('sku').addEventListener('blur', e => { e.target.value = U.normalizeSku(e.target.value); });
+  document.getElementById('b-primary').onclick = () => Layout.toast('บันทึกสำเร็จ', 'success');
+  document.getElementById('b-del').onclick = async () => {
+    const ok = await Layout.confirm({ title: 'ลบสินค้านี้?', message: 'ลบแล้วจะกู้คืนไม่ได้ และ SKU นี้จะถูกสงวนไว้', confirmText: 'ลบสินค้า', danger: true });
+    Layout.toast(ok ? 'ลบสินค้าแล้ว' : 'ยกเลิกแล้ว', ok ? 'success' : 'info');
+  };
+  Api.auth.me().then(r => Layout.mount({ page: 'products', title: 'Style Guide', user: r.user, onLogout: () => Layout.toast('ออกจากระบบ (Stage 2)') }));
+</script>
+</body></html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>เข้าสู่ระบบ | Luma Skin</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #f7f5f2;
+      font-family: sans-serif;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      padding: 36px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.07);
+    }
+    .login-card h1 { margin: 0 0 8px; }
+    .login-card p { color: #777; margin-bottom: 28px; }
+    .login-card input { width: 100%; box-sizing: border-box; }
+    .login-card button { width: 100%; margin-top: 12px; }
+    #error { color: #c0392b; margin-top: 14px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main class="login-card">
+    <h1>Luma Skin</h1>
+    <p>เข้าสู่ระบบจัดการสินค้า</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <label for="email">อีเมล</label>
+        <input id="email" type="email" required autocomplete="username"
+               placeholder="กรอกอีเมล">
+      </div>
+
+      <div class="field">
+        <label for="password">รหัสผ่าน</label>
+        <input id="password" type="password" required
+               autocomplete="current-password" placeholder="กรอกรหัสผ่าน">
+      </div>
+
+      <button class="btn btn-primary" id="submitBtn" type="submit">
+        เข้าสู่ระบบ
+      </button>
+      <div id="error" role="alert"></div>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorBox = document.getElementById('error');
+    const button = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      errorBox.textContent = '';
+      button.disabled = true;
+      button.textContent = 'กำลังเข้าสู่ระบบ...';
+
+      try {
+        const csrfResponse = await fetch('/api/auth/csrf', {
+          credentials: 'include'
+        });
+        const csrfData = await csrfResponse.json();
+
+        if (!csrfResponse.ok || !csrfData.csrf_token) {
+          throw new Error('ไม่สามารถเชื่อมต่อระบบได้');
+        }
+
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfData.csrf_token
+          },
+          body: JSON.stringify({
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'เข้าสู่ระบบไม่สำเร็จ');
+        }
+
+        window.location.href = 'styleguide.html';
+      } catch (error) {
+        errorBox.textContent = error.message || 'เกิดข้อผิดพลาด';
+        button.disabled = false;
+        button.textContent = 'เข้าสู่ระบบ';
+      }
+    });
+  </script>
+</body>
+</html>
